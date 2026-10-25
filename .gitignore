@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+教材页输出/
+tmp/
