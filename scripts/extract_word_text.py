@@ -31,7 +31,19 @@ NS = {"w": W[1:-1]}
 
 
 def text_of(el):
-    return "".join((t.text or "") for t in el.iter(W + "t")).strip()
+    parts = []
+    for node in el.iter():
+        if node.tag == W + "p" and node is not el:
+            # 表格单元格可含多个段落，不能把相邻段落粘成一个词或数字。
+            if parts and parts[-1] != "\n":
+                parts.append("\n")
+        elif node.tag == W + "t":
+            parts.append(node.text or "")
+        elif node.tag == W + "tab":
+            parts.append("\t")
+        elif node.tag in (W + "br", W + "cr"):
+            parts.append("\n")
+    return "".join(parts).strip()
 
 
 def style_of(p):
@@ -65,7 +77,8 @@ def iter_blocks(docx):
                 rows.append(" | ".join(cells))
             txt = "\n".join(r for r in rows if r.strip())
             if txt:
-                yield {"kind": "table", "index": 0, "style": "table", "text": txt}
+                yield {"kind": "table", "index": 0, "after_paragraph": p_index,
+                       "style": "table", "text": txt}
 
 
 def is_heading(style):
@@ -74,7 +87,7 @@ def is_heading(style):
 
 
 HEADING_RE = re.compile(r"^(第[一二三四五六七八九十百0-9]+[章节]|\d+\.\d+\s*[\u4e00-\u9fff]|附录|Chapter\b)")
-TOC_RE = re.compile(r"\s{2,}\d{1,3}\s*$")
+TOC_RE = re.compile(r"(?:\t|\s{2,})\d{1,3}\s*$")
 
 
 def looks_like_heading(text):
@@ -92,11 +105,17 @@ def main():
     ap.add_argument("--outline", action="store_true", help="只输出标题/非正文样式段落")
     ap.add_argument("--grep", help="只输出包含该关键词的段落（不区分大小写）")
     ap.add_argument("--context", type=int, default=1, help="grep 命中前后各输出几段（默认 1）")
-    ap.add_argument("--start", type=int, help="起始段落序号（1 起）")
+    ap.add_argument("--start", type=int, help="起始段落序号（1 起，含段后表格）")
     ap.add_argument("--end", type=int, help="结束段落序号（含）")
     ap.add_argument("--max-chars", type=int, default=30000, help="输出字符上限（默认 30000）")
     ap.add_argument("--stats", action="store_true", help="只输出统计信息")
     a = ap.parse_args()
+    if a.start is not None and a.start < 1:
+        ap.error("--start 必须大于等于 1")
+    if a.end is not None and a.end < 1:
+        ap.error("--end 必须大于等于 1")
+    if a.start is not None and a.end is not None and a.start > a.end:
+        ap.error("--end 不能小于 --start")
 
     blocks = list(iter_blocks(a.docx))
     paras = [b for b in blocks if b["kind"] == "p"]
@@ -137,10 +156,13 @@ def main():
         selected = [blocks[i] for i in sorted(keep)]
     else:
         selected = blocks
-        if a.start or a.end:
-            lo = (a.start or 1) - 1
-            hi = (a.end or len(paras))
-            selected = [b for b in blocks if b["kind"] == "p" and lo < b["index"] <= hi]
+        if a.start is not None or a.end is not None:
+            lo = a.start if a.start is not None else 1
+            hi = a.end if a.end is not None else max(1, len(paras))
+            # 表格跟随其前一段；文首表格归入第 1 段的阅读范围。
+            selected = [b for b in blocks if lo <= (
+                b["index"] if b["kind"] == "p" else max(1, b["after_paragraph"])
+            ) <= hi]
 
     out = []
     total = 0
