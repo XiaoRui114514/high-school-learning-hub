@@ -64,6 +64,16 @@ def main():
         pdf_dir = os.path.join(s, "01_官方教材", "PDF")
         pdfs = [f for f in os.listdir(pdf_dir) if f.lower().endswith(".pdf")] if os.path.isdir(pdf_dir) else []
         check(bool(pdfs), "教材 PDF：%s（%d 个）" % (s, len(pdfs)), "教材 PDF 缺失：%s" % s)
+        word_dir = os.path.join(s, "01_官方教材", "Word")
+        words = [f for f in os.listdir(word_dir) if f.lower().endswith(".docx")] if os.path.isdir(word_dir) else []
+        check(bool(words), "教材 Word：%s（%d 个）" % (s, len(words)), "教材 Word 缺失：%s" % s)
+        for f in words:
+            p = os.path.join(word_dir, f)
+            size = os.path.getsize(p)
+            if size < 100 * 1024:
+                problems.append("教材 Word 过小，可能损坏：%s（%d 字节）" % (p, size))
+            else:
+                ok.append("教材 Word 大小正常：%s（%.1f MB）" % (p, size / 1024 / 1024))
     for f in CTRL_FILES:
         p = os.path.join("00_学习控制中心", f)
         check(os.path.isfile(p), "控制中心文件存在：%s" % f, "缺少控制中心文件：%s" % f)
