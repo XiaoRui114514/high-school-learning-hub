@@ -26,7 +26,7 @@ git clone https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.dsh/s
 
 其他兼容 `SKILL.md` 的 Agent：把本仓库放进它的 skills 目录，目录名保持 `high-school-learning-hub`。若环境只读 `name` / `description` 两个 frontmatter 字段，可忽略 `whenToUse`。
 
-> 仓库包含四科教材（PDF + Word），克隆约 305MB；首次下载会慢一些。
+> 仓库包含四科教材（PDF + Word），克隆约 305MB；首次下载会慢一些。已安装过旧版本时，进入 skill 目录执行 `git pull` 即可把教材一起更新下来。
 
 ## 使用
 
