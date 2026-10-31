@@ -129,4 +129,4 @@ py -3 scripts/extract_word_text.py <DOCX> --start 76 --end 95
 
 ## License
 
-MIT
+规则、文档与脚本采用 MIT；`textbooks/` 中的教材版权归原出版社，不在 MIT 授权范围内。
