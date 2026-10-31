@@ -25,7 +25,7 @@ textbooks/
 
 ## 三、读取 Word
 
-不要直接打开整份 Word（单文件 68–83 MB，含大量图片）；用 skill 自带脚本按目录、关键词或段落取文字：
+不要直接打开整份 Word（单文件 36.8–82.9 MB，含大量图片）；用 skill 自带脚本按目录、关键词或段落取文字：
 
 ```powershell
 # 在 skill 根目录运行
@@ -61,4 +61,4 @@ py -3 scripts/extract_word_text.py <DOCX> --start 76 --end 95
 
 ## 六、体积提示
 
-四科教材合计约 305 MB，克隆本仓库会一并下载。单个 Word 文件 68–83 MB，GitHub 会提示超过 50 MB 建议使用 LFS；目前仍可直接克隆/下载。
+四科教材合计约 305 MB，克隆本仓库会一并下载。单个 Word 文件 36.8–82.9 MB，GitHub 会提示超过 50 MB 建议使用 LFS；目前仍可直接克隆/下载。
