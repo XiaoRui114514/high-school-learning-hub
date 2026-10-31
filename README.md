@@ -3,7 +3,7 @@
 把「高中学习中枢」学习工作区的运行规则打包成一个可复用的 Agent Skill。核心是五件事：
 
 - **教材驱动**：以官方教材为唯一知识结构基准，按节推进，不整本扫描。
-- **一次一个点**：每轮只讲一个知识点或一道题，讲完停下等确认。
+- **按任务模式推进**：逐点教学每轮只推进一个点；整套资料、试卷研究和整天批改按指定范围完整处理。
 - **记得有价值的信息**：原始记录、讲题提示卡、长期记忆、错题分层管理，有证据门槛。
 - **英语写作专用流程**：审题 → 整体评价 → 逐句批改 → 错因 → 分层修改 → 记录进展，不伪造官方分数。
 - **不伪造**：不虚构页码、板块、学习记录或掌握程度。
@@ -12,7 +12,19 @@
 
 ## 安装
 
-DeepSeek Harness / Codex 等使用 `~/.dsh/skills/` 的环境：
+Codex（[官方技能目录说明](https://developers.openai.com/codex/skills/)使用用户级 `~/.agents/skills/`；若配置了自定义技能目录，使用对应目录）：
+
+```powershell
+git clone https://github.com/XiaoRui114514/high-school-learning-hub.git "$env:USERPROFILE\.agents\skills\high-school-learning-hub"
+```
+
+macOS / Linux：
+
+```bash
+git clone https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.agents/skills/high-school-learning-hub
+```
+
+DeepSeek Harness 等使用 `~/.dsh/skills/` 的环境：
 
 ```powershell
 git clone https://github.com/XiaoRui114514/high-school-learning-hub.git "$env:USERPROFILE\.dsh\skills\high-school-learning-hub"
@@ -24,7 +36,7 @@ macOS / Linux：
 git clone https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.dsh/skills/high-school-learning-hub
 ```
 
-其他兼容 `SKILL.md` 的 Agent：把本仓库放进它的 skills 目录，目录名保持 `high-school-learning-hub`。若环境只读 `name` / `description` 两个 frontmatter 字段，可忽略 `whenToUse`。
+其他兼容 `SKILL.md` 的 Agent：把本仓库放进它的 skills 目录，目录名保持 `high-school-learning-hub`。入口 frontmatter 使用 `name` / `description`。
 
 > 仓库包含四科教材（PDF + Word），克隆约 305MB；首次下载会慢一些。已安装过旧版本时，进入 skill 目录执行 `git pull` 即可把教材一起更新下来。
 
@@ -57,7 +69,9 @@ Agent 应先读 `textbooks/01_数学/01_官方教材/INDEX.md`（有工作区时
 │  ├─ teaching-flow.md            # 教材教学、讲题、批改、复习的展开流程
 │  ├─ memory-rules.md             # 记忆分层、证据门槛、掌握判定与维护
 │  ├─ workspace-map.md            # 目录结构、关键文件、命名与页码规则
-│  └─ english-writing.md          # 英语作文批改、评分边界、错因与训练路线
+│  ├─ english-writing.md          # 英语作文批改、评分边界、错因与训练路线
+│  ├─ english-remediation.md      # 分天补救、完整资料、照片批改与打印
+│  └─ shanghai-english-research.md # 上海英语试卷研究与证据边界
 ├─ assets/templates/
 │  ├─ 学习记录模板.md
 │  └─ 错题模板.md
@@ -123,6 +137,7 @@ py -3 scripts/extract_word_text.py <DOCX> --start 76 --end 95
 
 ## 更新记录
 
+- 2026-10-28：新增上海英语补救、试卷研究和省纸打印规则；统一主规则与参考文件的模式边界、图片核对及无工作区回退说明。
 - 2026-10-25 v1.2：教材 PDF/Word 随仓库分发；阅读顺序改为 Word 优先、PDF 校对。
 - 2026-10-25 v1.1：增加 Word 版使用边界、教材上传与版本变更流程、英语写作专用流程与参考文件。
 - 2026-10-25 v1.0：初版，提炼工作区规则并上传。
