@@ -145,3 +145,19 @@ py -3 scripts/extract_word_text.py <DOCX> --start 76 --end 95
 ## License
 
 规则、文档与脚本采用 MIT；`textbooks/` 中的教材版权归原出版社，不在 MIT 授权范围内。
+
+## 初始化、自检和最终成品打包
+
+```sh
+# 默认只预览；添加 --apply 才创建缺失文件，绝不覆盖已有记录
+python scripts/init_workspace.py /path/to/个人工作区
+python scripts/init_workspace.py /path/to/个人工作区 --apply
+python scripts/check_workspace.py --root /path/to/个人工作区 --mode workspace --json
+# 技能包检查不会把缺少个人学习记录当作错误
+python scripts/check_workspace.py --mode package --json
+python scripts/package_skill.py --out tmp/high-school-learning-hub.zip
+```
+
+发布内容由 `publication-files.json` 逐文件列出；研究、个人记录、日志、教材均不进入默认发布包。
+教材继续从已有仓库副本使用；如需额外发布成品，先核对内容和公开授权，再调整白名单。
+压缩包含 `PUBLICATION.json` 文件哈希清单，重复构建结果一致。

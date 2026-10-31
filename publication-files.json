@@ -1,0 +1,19 @@
+[
+  "LICENSE",
+  "README.md",
+  "SKILL.md",
+  "assets/templates/学习记录模板.md",
+  "assets/templates/错题模板.md",
+  "publication-files.json",
+  "references/english-remediation.md",
+  "references/english-writing.md",
+  "references/memory-rules.md",
+  "references/shanghai-english-research.md",
+  "references/teaching-flow.md",
+  "references/workspace-map.md",
+  "scripts/check_workspace.py",
+  "scripts/extract_textbook_page.py",
+  "scripts/extract_word_text.py",
+  "scripts/init_workspace.py",
+  "scripts/package_skill.py"
+]

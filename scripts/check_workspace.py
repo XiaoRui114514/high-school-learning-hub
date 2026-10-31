@@ -39,7 +39,8 @@ def check(cond, good, bad):
     (ok if cond else problems).append(good if cond else bad)
 
 
-def main():
+def check_workspace():
+    ok.clear(); problems.clear(); notes.clear()
     root = os.getcwd()
     print("工作区：%s\n" % root)
     check(os.path.isfile("README.md"), "根 README.md 存在", "缺少根 README.md")
@@ -116,6 +117,7 @@ def main():
 
     # 空目录（排除已由说明文件解释的目录）
     for dp, dn, fn in os.walk("."):
+        dn[:] = [d for d in dn if not d.startswith(".")]
         if os.path.basename(dp).startswith("."):
             continue
         if not dn and not fn:
@@ -133,6 +135,41 @@ def main():
     if os.environ.get("WORKSPACE_CHECK_WAIT") == "1":
         print("\n窗口将在 60 秒后自动关闭（按任意键立即关闭）。")
     return 1 if problems else 0
+
+
+def main():
+    import argparse, contextlib, io, json
+    from pathlib import Path
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--root', type=Path, default=Path.cwd())
+    ap.add_argument('--mode', choices=['auto', 'package', 'workspace'], default='auto')
+    ap.add_argument('--json', action='store_true')
+    a = ap.parse_args()
+    root = a.root.resolve()
+    if not root.is_dir():
+        print(json.dumps({'ok':False, 'error':'目标目录不存在', 'root':str(root)},ensure_ascii=False))
+        return 1
+    mode = ('package' if (root/'SKILL.md').is_file() else 'workspace') if a.mode == 'auto' else a.mode
+    if mode == 'package':
+        from package_skill import publication_files
+        try:
+            files = publication_files(root)
+            result = {'ok': True, 'mode': mode, 'files': [name for name, _ in files]}
+        except (OSError, ValueError, TypeError) as error:
+            result = {'ok': False, 'mode': mode, 'error': str(error)}
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0 if result['ok'] else 1
+    previous = Path.cwd()
+    try:
+        os.chdir(root)
+        if a.json:
+            with contextlib.redirect_stdout(io.StringIO()):
+                status = check_workspace()
+            print(json.dumps({'ok': status == 0, 'mode': mode, 'passed': ok, 'problems': problems, 'notes': notes}, ensure_ascii=False, indent=2))
+            return status
+        return check_workspace()
+    finally:
+        os.chdir(previous)
 
 
 if __name__ == "__main__":

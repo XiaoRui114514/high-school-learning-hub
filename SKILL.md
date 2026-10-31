@@ -19,8 +19,9 @@ description: 高中学习中枢工作区规则：以官方教材为唯一知识�
 
 ### 0.1 教材位置（工作区 / 自带）
 
-- 当前有工作区：优先用 `0X_学科/01_官方教材/` 下的教材。
-- 当前没有工作区，或需要离线阅读：用 skill 自带的 `textbooks/0X_学科/01_官方教材/`。
+- 当前有工作区：优先用 `0X_学科/01_官方教材/` 下已核验的教材；初始化生成的待填写索引不是已核验材料。工作区教材缺失时，可定位 skill 中实际存在的教材或用户指定原文件，并说明来源与版本。
+- 当前没有工作区，或需要离线阅读：目录确实存在时用 skill 自带的 `textbooks/0X_学科/01_官方教材/`。
+- 最小发布 ZIP 默认不带教材；路径缺失时如实说明并请用户提供可靠教材页面，不假装已读。
 - 两者目录结构相同（`PDF/`、`Word/`、`INDEX.md`、`教材信息/`）；自带副本用于随 skill 下载后直接阅读，不替代工作区的学习记录。
 
 ## 1. 五条硬规则
@@ -288,7 +289,9 @@ description: 高中学习中枢工作区规则：以官方教材为唯一知识�
 - `references/english-remediation.md`：七天完整资料、滚动复习、整天照片批改与动态修订。
 - `references/shanghai-english-research.md`：小红书图片试卷核验、去重、证据边界及证据适用边界。
 - `assets/templates/学习记录模板.md`、`assets/templates/错题模板.md`：直接复制使用。
-- `scripts/check_workspace.py`：工作区自检（在工作区根目录运行）。
+- `scripts/package_skill.py`：按 `publication-files.json` 白名单构建最终包，默认不打包教材、研究或个人记录；不指定 `--out` 时只显示文件清单。
+- `scripts/init_workspace.py`：预览个人工作区缺项，用户确定路径后可用 `--apply` 创建，绝不覆盖已有文件。
+- `scripts/check_workspace.py`：用 `--root <目录> --mode package|workspace --json` 区分技能包与个人工作区检查，默认自动识别。
 - `scripts/extract_textbook_page.py`：按页码提取 PDF 教材文字或渲染页面图片（Token 优化）。
 - `scripts/extract_word_text.py`：从 Word 教材提取文字/表格，支持目录、关键词和段落范围，不依赖 python-docx。
 - `textbooks/`：四科教材 PDF + Word + INDEX + 教材信息；随 skill 下载，供离线阅读。
