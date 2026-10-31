@@ -26,6 +26,8 @@ git clone https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.dsh/s
 
 其他兼容 `SKILL.md` 的 Agent：把本仓库放进它的 skills 目录，目录名保持 `high-school-learning-hub`。若环境只读 `name` / `description` 两个 frontmatter 字段，可忽略 `whenToUse`。
 
+> 仓库包含四科教材（PDF + Word），克隆约 305MB；首次下载会慢一些。
+
 ## 使用
 
 安装后，当任务涉及以下内容时会自动匹配（也可以直接点名 `high-school-learning-hub`）：
@@ -43,7 +45,7 @@ git clone https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.dsh/s
 开始学习 数学 1.1
 ```
 
-Agent 应先读 `01_数学/01_官方教材/INDEX.md` 定位，再只打开对应教材页，先说明本节的真实板块与页码，然后一次只推进一个知识点。
+Agent 应先读 `textbooks/01_数学/01_官方教材/INDEX.md`（有工作区时读工作区同名文件）定位，再只打开对应教材页，先说明本节的真实板块与页码，然后一次只推进一个知识点。
 
 ## 目录
 
@@ -59,9 +61,15 @@ Agent 应先读 `01_数学/01_官方教材/INDEX.md` 定位，再只打开对应
 ├─ assets/templates/
 │  ├─ 学习记录模板.md
 │  └─ 错题模板.md
+├─ textbooks/                     # 四科教材：PDF + Word + INDEX + 教材信息
+│  ├─ 01_数学/01_官方教材/
+│  ├─ 02_物理/01_官方教材/
+│  ├─ 03_化学/01_官方教材/
+│  └─ 04_英语/01_官方教材/
 └─ scripts/
    ├─ check_workspace.py          # 工作区自检
-   └─ extract_textbook_page.py    # 按页码提取教材文字 / 渲染页面
+   ├─ extract_textbook_page.py    # 按页码提取 PDF 文字 / 渲染页面
+   └─ extract_word_text.py        # 提取 Word 文字 / 表格（目录、关键词、段落范围）
 ```
 
 ## 工作区要求
@@ -76,7 +84,7 @@ README.md
 05_跨学科学习记录/  06_公共错题与复习/  07_公共资料/  08_系统工具/
 ```
 
-如果工作区里已有 `AGENTS.md` / `AGENT_INSTRUCTIONS.md` / `MEMORY_RULES.md`，以工作区原文件为准；本 Skill 是这些规则的**去个人化、可移植版本**。没有工作区时，也可以只把 `SKILL.md` 当作教学规则使用，但涉及页码、进度、错题时必须先建立工作区，不能凭空引用。
+如果工作区里已有 `AGENTS.md` / `AGENT_INSTRUCTIONS.md` / `MEMORY_RULES.md`，以工作区原文件为准；本 Skill 是这些规则的**去个人化、可移植版本**。没有工作区时，也可以直接用自带的 `textbooks/` 阅读教材；但学习记录、进度、错题仍需要建立工作区后再写，不能凭空引用。
 
 脚本依赖 Python 3.8+：
 
@@ -84,29 +92,38 @@ README.md
 py -3 -m pip install pypdf pypdfium2 pillow
 ```
 
-## 教材 Word 版与 PDF 的分工
+## 教材阅读顺序：Word 优先，PDF 校对
 
-工作区的教材可能同时有 PDF 与 Word 版：
+仓库自带四科教材，`Word/` 是日常阅读首选，`PDF/` 是原版校对与页码依据：
 
-- `01_官方教材/PDF/`：**视觉与原版依据**。章节、标题、页码、图片、实验、例题、练习、排版都以 PDF 为准。
-- `01_官方教材/Word/`：**文字检索辅助版本**。用于快速搜定义、公式、关键词。
-- 两者冲突时 **PDF 优先**；Word 的页码和排版不可当作教材页码引用。
-- 用 Word 搜到内容后，必须回到 PDF 对应页核对，再讲解或引用。
+- `Word/`：文字、定义、公式、关键词、例题/练习文字优先从 Word 读取。
+- `PDF/`：Word 识别不到、缺字/乱码、表格/图片/公式不清或内容有误时，回 PDF 原页核对。
+- 教材页码、图片、实验、例题/练习排版与最终校对以 PDF 为准；Word 的页码/排版不可当作教材页码引用。
+- Word 与 PDF 冲突时，以 PDF 原版为准。
 
-教材文件（PDF/Word）体积大且有版权，**不放进本仓库**；个人使用时放在工作区 `01_官方教材/` 下，或使用单独的私有备份仓库。
+自带教材路径：`textbooks/0X_学科/01_官方教材/{PDF,Word}/`，每科另有 `INDEX.md` 与 `教材信息/`。
+
+读 Word 时不要直接打开整份文件；用脚本按目录、关键词或段落取文字：
+
+```powershell
+py -3 scripts/extract_word_text.py "textbooks/01_数学/01_官方教材/Word/数学必修第一册_沪教版_上海教育出版社_2020年7月第1版.docx" --outline
+py -3 scripts/extract_word_text.py <DOCX> --grep "集合" --context 1
+py -3 scripts/extract_word_text.py <DOCX> --start 76 --end 95
+```
 
 ## 边界
 
-- 本仓库**不包含**任何个人学习记录、教材 PDF/Word、账号信息或隐私数据。
-- 教材版权归原出版社所有；本仓库只包含规则与工具，不分发教材。
+- 本仓库包含四科教材 PDF/Word 与规则/工具；**不包含**个人学习记录、账号信息或隐私数据。
+- 教材版权归原出版社所有，仅限个人学习使用；请勿再分发或用于商业用途。
 - 资源获取遵循「尽合理范围搜索 → 验证 → 成功则保存，失败则停止」，不绕过登录、付费或权限限制。
 
 ## 来源
 
-规则提炼自「高中学习中枢」工作区的 `AGENTS.md`、`00_学习控制中心/AGENT_INSTRUCTIONS.md`、`MEMORY_RULES.md`、`README.md`、`01_官方教材/说明.md`、`04_英语/09_英语写作提升/README.md` 与各学科 `00_学科记忆/PROFILE.md`。整理日期：2026-10-25。
+规则提炼自「高中学习中枢」工作区的 `AGENTS.md`、`00_学习控制中心/AGENT_INSTRUCTIONS.md`、`MEMORY_RULES.md`、`README.md`、`01_官方教材/说明.md`、`04_英语/09_英语写作提升/README.md` 与各学科 `00_学科记忆/PROFILE.md`。教材文件由用户提供，整理日期：2026-10-25。
 
 ## 更新记录
 
+- 2026-10-25 v1.2：教材 PDF/Word 随仓库分发；阅读顺序改为 Word 优先、PDF 校对。
 - 2026-10-25 v1.1：增加 Word 版使用边界、教材上传与版本变更流程、英语写作专用流程与参考文件。
 - 2026-10-25 v1.0：初版，提炼工作区规则并上传。
 

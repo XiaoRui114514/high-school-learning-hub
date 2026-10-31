@@ -18,6 +18,12 @@ whenToUse: 用户要求按教材学习某章/某节、讲题或答疑、复习/�
 2. 若不是，先找到它（常见为 `桌面/高中学习中枢`、`F:\高中学习中枢`），不要凭猜测引用页码或记录。
 3. 找不到时，只向用户确认工作区路径；确认前可以按通用知识回答，但必须说明「未读取工作区/教材」，不得假装引用。
 
+### 0.1 教材位置（工作区 / 自带）
+
+- 当前有工作区：优先用 `0X_学科/01_官方教材/` 下的教材。
+- 当前没有工作区，或需要离线阅读：用 skill 自带的 `textbooks/0X_学科/01_官方教材/`。
+- 两者目录结构相同（`PDF/`、`Word/`、`INDEX.md`、`教材信息/`）；自带副本用于随 skill 下载后直接阅读，不替代工作区的学习记录。
+
 ## 1. 五条硬规则
 
 1. **教材优先**：教学依据优先级为「官方教材 > 官方课程标准 > 可信教学参考 > 可靠辅助资料 > Agent 通用知识」。可以解释教材，不得篡改教材的定义、符号、条件与页码。
@@ -63,11 +69,11 @@ whenToUse: 用户要求按教材学习某章/某节、讲题或答疑、复习/�
 
 **Word 版教材的使用边界：**
 
-- `01_官方教材/PDF/` 是**视觉与原版依据**：章节、标题、页码、图片、实验、例题、练习、排版都以 PDF 为准。
-- `01_官方教材/Word/` 是**文字检索辅助版本**：只用于快速搜定义、公式、关键词。
-- 两者冲突时 **PDF 优先**；Word 的页码与排版不可当作教材页码引用。
-- 用 Word 搜到内容后，必须回到 PDF 对应页核对，再讲解或引用；没有 PDF 原页时明确说明「缺少原版页面」，不假装引用。
-- Word 缺失不影响教学；Word 存在也不改变「教材页码以 PDF/INDEX 为准」。
+- `01_官方教材/Word/` 是**日常阅读的首选版本**：文字、定义、公式、关键词、例题/练习文字优先从 Word 读取。
+- `01_官方教材/PDF/` 是**原版视觉与校对依据**：Word 识别不到、缺字/乱码、表格/图片/公式不清或内容有误时，回 PDF 原页核对。
+- 教材页码、图片、实验、例题/练习排版与最终校对以 PDF 为准；Word 的页码与排版不可当作教材页码引用。
+- Word 与 PDF 冲突时，以 PDF 原版为准。
+- 如果 Word 缺失，直接用 PDF；如果 PDF 缺失，明确说明「缺少原版页面」，不假装引用。
 
 禁止：提前大规模讲下一节；一次讲完整章；用自编题取代教材例题；提前公布教材练习答案；引用未回填的例题/练习位置。
 
@@ -271,7 +277,9 @@ whenToUse: 用户要求按教材学习某章/某节、讲题或答疑、复习/�
 - `references/english-writing.md`：英语作文批改、评分边界、错因分类、修改层次与训练路线。
 - `assets/templates/学习记录模板.md`、`assets/templates/错题模板.md`：直接复制使用。
 - `scripts/check_workspace.py`：工作区自检（在工作区根目录运行）。
-- `scripts/extract_textbook_page.py`：按页码提取教材文字或渲染页面图片（Token 优化）。
+- `scripts/extract_textbook_page.py`：按页码提取 PDF 教材文字或渲染页面图片（Token 优化）。
+- `scripts/extract_word_text.py`：从 Word 教材提取文字/表格，支持目录、关键词和段落范围，不依赖 python-docx。
+- `textbooks/`：四科教材 PDF + Word + INDEX + 教材信息；随 skill 下载，供离线阅读。
 
 脚本用法：
 
@@ -279,9 +287,14 @@ whenToUse: 用户要求按教材学习某章/某节、讲题或答疑、复习/�
 # 工作区自检（cwd = 工作区根目录）
 py -3 scripts/check_workspace.py
 
-# 按教材页码取页（PDF 页码 = 教材页码 + 偏移）
+# 按教材页码取 PDF 页（PDF 页码 = 教材页码 + 偏移）
 py -3 scripts/extract_textbook_page.py "01_数学/01_官方教材/PDF/数学必修第一册_沪教版_上海教育出版社_2020年7月第1版.pdf" --教材页 2 --offset 7
 py -3 scripts/extract_textbook_page.py <PDF> --教材页 2 --offset 7 --image --out tmp/教材页
+
+# 读 Word 教材：先看目录/关键词，再按段落读
+py -3 scripts/extract_word_text.py "textbooks/01_数学/01_官方教材/Word/数学必修第一册_沪教版_上海教育出版社_2020年7月第1版.docx" --outline
+py -3 scripts/extract_word_text.py <DOCX> --grep "集合" --context 1
+py -3 scripts/extract_word_text.py <DOCX> --start 76 --end 95
 ```
 
-脚本依赖：Python 3.8+，`pypdf`（文字/页数）、`pypdfium2` + `Pillow`（渲染图片）。缺失时脚本会提示安装命令。
+脚本依赖：Python 3.8+，`pypdf`（PDF 文字/页数）、`pypdfium2` + `Pillow`（渲染 PDF 图片）。Word 提取只用 Python 标准库；缺失依赖时脚本会提示安装命令。
