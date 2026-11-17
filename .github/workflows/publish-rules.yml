@@ -12,6 +12,11 @@ on:
       - 'scripts/**'
       - '.github/workflows/publish-rules.yml'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Optional new rules package tag, for example rules-2026.11.17'
+        required: false
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -37,3 +42,9 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python scripts/check_workspace.py --mode package --json
       - run: python scripts/publish_rules.py --publish
+      - name: Publish a requested versioned package
+        if: github.event_name == 'workflow_dispatch' && inputs.release_tag != ''
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/release_rules.py
