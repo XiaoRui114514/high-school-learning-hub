@@ -1,0 +1,20 @@
+{
+  "LICENSE": "b6904271ef8452bf32115e0c51fc5feb7c182ae6c1ebbdd905d4ee93897d6cc2",
+  "README.en.md": "6d338fa59d447c37c455039477b393ea771a268541b6ce0ef808d0a287465325",
+  "README.md": "6359bcbc46fabad0d623daf0a093fcdf15b105ba24a71b3086f55200838d5554",
+  "SKILL.md": "9185b9cef0cd4028c4a06ee573defbabd3e3b1452ea46135cdc8a7011a531ba7",
+  "assets/templates/学习记录模板.md": "7540cf5e1725cb15beda09508167813513b4154bfffe65a5e8567c8d71b8e93d",
+  "assets/templates/错题模板.md": "bed081c0eb606d9fd8e836e6d6436b0dcc3d02766acd208f8a3b5cb1a22b6720",
+  "publication-files.json": "97b78abe27b20595cd2b14f58592e970910f0f71d4b34608331a999b0abf6a3f",
+  "references/english-remediation.md": "21afd46e8dab5879d678c21008f4371a5163ac997bb1cc67d889a6b3964396be",
+  "references/english-writing.md": "44b81d92f2350d64b2b355b1e44f24ea6d181da02dea583719ace91c6f2eac21",
+  "references/memory-rules.md": "cd8ffa302ea948c8d11bc3cb0133c98b3473e9c3bf177abc6b750f2e43079c16",
+  "references/shanghai-english-research.md": "16fbdf9678f536599ba8cba89570e29fdaa886c9a632b82344d14b62666b9e6d",
+  "references/teaching-flow.md": "c8cd3b7daf30149311097074c13863af702eaef8b24b000f640cc5480505d01a",
+  "references/workspace-map.md": "55e031e6bf5486903c8c16410435b325a3f9f82e819e7a9655a90f48051f48b5",
+  "scripts/check_workspace.py": "72b9f1212fe0f3ae3b9178ca8eb569adf1987ec036f3ebe7e2cd78da173effef",
+  "scripts/extract_textbook_page.py": "79703b6e3699aa7f13ae4113b1281fc94a51bb652f5cad933c176f41161dec04",
+  "scripts/extract_word_text.py": "5275108a65bb98b4b457f0e93ef3cdce37a2387eb7220ff1e50f83aac0a106b2",
+  "scripts/init_workspace.py": "74ffd9ac66a4a807c80e3297b7845e31278339f2522277d73be4b4b4b34a5880",
+  "scripts/package_skill.py": "37b0d7d1ad1218027354dc759bbf028e3736478d3d464b87fd8e9b92b36e96b9"
+}
