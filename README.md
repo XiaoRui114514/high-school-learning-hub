@@ -13,7 +13,15 @@
 
 ## 仅安装规则（不下载教材）
 
-需要轻量安装时，可先按 [English 安装说明](README.en.md#install-the-rules-without-downloading-textbooks) 使用 sparse checkout，仅获取根目录规则、参考文件、模板和脚本；教材请使用自己有权使用的私人副本。完整克隆和默认发布 ZIP 的内容不同，见下方打包说明。
+轻量安装使用自动生成的 [rules 分支](https://github.com/XiaoRui114514/high-school-learning-hub/tree/rules)，只含规则、参考文件、空白模板和工具：
+
+```sh
+git clone --depth 1 --single-branch --branch rules https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.agents/skills/high-school-learning-hub
+```
+
+安装目录以当前 Agent 的要求为准。更新可用 `git -C ~/.agents/skills/high-school-learning-hub pull --ff-only`；个人记录另放私人工作区，不要修改生成分支，贡献请提交到 main。[版本 ZIP](https://github.com/XiaoRui114514/high-school-learning-hub/releases) 附有 SHA256SUMS，可校验后解压安装。教材请使用自己有权使用的私人副本。
+
+普通克隆 main 仍含教材，不要让递归安装器直接复制 main 根目录。GitHub 源码 ZIP/tar 现已排除 `textbooks/`，纯规则分支和显式发布包另受逐文件白名单约束。仓库中的教材及历史没有删除，许可范围没有改变。
 
 ## 安装
 

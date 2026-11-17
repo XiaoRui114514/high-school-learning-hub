@@ -8,16 +8,19 @@ The teaching flow is explanation → textbook example → inquiry → practice �
 
 ## Install the rules without downloading textbooks
 
-For agents that discover user skills in `~/.agents/skills/`, use Git sparse checkout:
+For agents that discover user skills in `~/.agents/skills/`, install the generated, textbook-free `rules` branch:
 
 ```sh
-git clone --depth 1 --filter=blob:none --sparse https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.agents/skills/high-school-learning-hub
-git -C ~/.agents/skills/high-school-learning-hub sparse-checkout set assets references scripts
+git clone --depth 1 --single-branch --branch rules https://github.com/XiaoRui114514/high-school-learning-hub.git ~/.agents/skills/high-school-learning-hub
 ```
 
-Cone-mode sparse checkout includes root files such as `SKILL.md` and omits `textbooks/`. Other agents may use a different skills directory. Check their installation instructions; loading a skill does not authorize account access or make private history available across products.
+The [rules branch](https://github.com/XiaoRui114514/high-school-learning-hub/tree/rules) contains only the publication allowlist plus a SHA-256 manifest. Update it with `git -C ~/.agents/skills/high-school-learning-hub pull --ff-only`. Keep personal records in a separate private workspace; do not edit the generated branch. Contribute reusable changes to `main`. Other agents may use a different installation directory.
 
-Use your own authorized textbook copies in a private workspace. The full repository also contains publisher-owned PDF/Word materials, excluded from the MIT license and the default publication ZIP. The rules-only installation does not include those files; never claim to have checked a page that is unavailable. Do not redistribute publisher materials without the necessary rights.
+For a versioned ZIP, use the [rules package releases](https://github.com/XiaoRui114514/high-school-learning-hub/releases), verify `SHA256SUMS`, and extract into your agent's supported skills directory. Loading a skill does not authorize accounts or share private history between products.
+
+An ordinary clone of `main` still includes textbooks. GitHub source ZIP/tar archives now omit `textbooks/`; the generated rules branch and explicit release ZIP are the bounded installation paths. Do not use an unrestricted recursive installer on the main repository root.
+
+Use your own authorized textbook copies in a private workspace. The full repository also contains publisher-owned PDF/Word materials, excluded from the MIT license and the rules distribution, source archives and explicit publication ZIP. The rules-only installation does not include those files; never claim to have checked a page that is unavailable. Do not redistribute publisher materials without the necessary rights.
 
 ## Start a workspace
 

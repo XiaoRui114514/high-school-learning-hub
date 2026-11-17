@@ -1,3 +1,13 @@
 *.docx binary
 *.doc binary
 *.pdf binary
+
+# GitHub source archives are for reusable rules, not textbook redistribution.
+textbooks export-ignore
+textbooks/** export-ignore
+private export-ignore
+private/** export-ignore
+worklogs export-ignore
+worklogs/** export-ignore
+references/research export-ignore
+references/research/** export-ignore
